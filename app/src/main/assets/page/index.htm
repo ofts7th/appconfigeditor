@@ -1,0 +1,26 @@
+<div class="cs_page fullfill homepage" id="page_asset_index">
+    <div class="titlebar">
+        配置文件修改
+    </div>
+    <div class="itemlist">
+
+    </div>
+    <script>
+        var selectedProject = "";
+        $(function(){
+            var pageEle = $('#page_asset_index');
+            var projects = $.cs.parseJson(local.getProjectList());
+            for(var i=0;i<projects.length;i++){
+                var p = projects[i];
+                var proj = $('<div class="row csrow"><div style="height: 4rem;" class="col-xs-12 project">'+p+'</div></div>');
+                pageEle.find('.itemlist').append(proj);
+            }
+
+            pageEle.on('click', '.project', function(){
+                var self = $(this);
+                selectedProject = self.html();
+                $.cs.gotoPage({source: 'asset', url: 'listconfig.htm'});
+            });
+        });
+    </script>
+</div>

@@ -1,0 +1,114 @@
+<div class="cs_page fullfill homepage" id="page_asset_listconfig">
+    <div class="titlebar">
+        文件列表
+    </div>
+    <div class="itemlist">
+
+    </div>
+    <div class="row csrow aligncenter">
+        <button class="btn btn-default btnEdit">编辑</button>
+        &nbsp;&nbsp;
+        <button class="btn btn-default btnActive">激活</button>
+        &nbsp;&nbsp;
+        <button class="btn btn-default btnDelete">删除</button>
+    </div>
+    <div class="row csrow">
+        <div class="col-xs-8">
+            <input type="text" class="form-control txtnewconfigname" />
+        </div>
+        <button class="btn btn-default btnCopy">复制</button>
+    </div>
+    <div class="hidden">
+        <div class="projecteditorpanel" style="width: 80%;height: 80vh;">
+            <textarea class="configcontent" style="width:100%;" rows="10"></textarea>
+            <div class="row csrow aligncenter">
+                <button class="btn btn-default btnSave">保存</button>
+                &nbsp;&nbsp;
+                <button class="btn btn-default" onclick="$.cs.closePopup();">取消</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function(){
+            var pageEle = $('#page_asset_listconfig');
+
+            var refreshConfigItems = function(){
+                pageEle.find('.itemlist').empty();
+                var items = $.cs.parseJson(local.getConfigItemList(selectedProject));
+                for(var i=0;i<items.length;i++){
+                    var item = items[i];
+                    var ele = $('<div class="row csrow"><div class="col-xs-10 item">'+item+'</div><div class="col-xs-2"><input type="checkbox" class="ckbitem form-control"/></div></div>');
+                    pageEle.find('.itemlist').append(ele);
+                }
+            };
+
+            refreshConfigItems();
+
+            var getSelectedConfig = function(){
+                var sl = pageEle.find('.ckbitem:checked');
+                if(sl.length != 1)
+                    return "";
+                return sl.closest('.csrow').find('.item').html();
+            };
+
+            pageEle.find('.btnEdit').click(function(){
+                var c = getSelectedConfig();
+                if(c == '')
+                    return;
+
+                var info = local.readConfig(selectedProject+'/'+c);
+                $('.projecteditorpanel .configcontent').val(info);
+                $.cs.showPopup({
+                    content: $('.projecteditorpanel')
+                });
+            });
+
+            pageEle.find('.btnActive').click(function(){
+                var c = getSelectedConfig();
+                if(c == '')
+                    return;
+
+                local.activeConfig(selectedProject, c);
+
+                alert('done');
+
+                refreshConfigItems();
+            });
+
+            pageEle.find('.btnDelete').click(function(){
+                var c = getSelectedConfig();
+                if(c == '')
+                    return;
+
+                if(pageEle.find('.ckbitem').length == 1)
+                    return;
+
+                local.deleteConfig(selectedProject+'/'+ c);
+                refreshConfigItems();
+            });
+
+            pageEle.find('.btnCopy').click(function(){
+                var c = getSelectedConfig();
+                if(c == '')
+                    return;
+
+                var configname = pageEle.find('.txtnewconfigname').val();
+                if(configname != ''){
+                    local.copyConfig(selectedProject, c, configname);
+                    refreshConfigItems();
+                    pageEle.find('.txtnewconfigname').val('');
+                }
+            });
+
+            $('.projecteditorpanel .btnSave').click(function(){
+                var c = getSelectedConfig();
+                local.saveProjectConfig(selectedProject+'/'+c, $('.projecteditorpanel .configcontent').val());
+                $.cs.closePopup();
+
+                alert('done');
+
+                refreshConfigItems();
+            });
+        });
+    </script>
+</div>
