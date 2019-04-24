@@ -250,6 +250,10 @@ public class Util {
     }
 
     public static String readFile(String path) {
+        return readFile(path, false);
+    }
+
+    public static String readFile(String path, boolean withRN) {
         StringBuilder sb = new StringBuilder();
         try {
             File file = new File(path);
@@ -258,8 +262,17 @@ public class Util {
                         new FileInputStream(file));
                 BufferedReader bufferedReader = new BufferedReader(read);
                 String lineTxt = null;
+                boolean isFirst = true;
                 while ((lineTxt = bufferedReader.readLine()) != null) {
+                    if (withRN) {
+                        if (!isFirst) {
+                            sb.append("\r\n");
+                        }
+                    }
                     sb.append(lineTxt);
+                    if (isFirst) {
+                        isFirst = false;
+                    }
                 }
                 read.close();
             }

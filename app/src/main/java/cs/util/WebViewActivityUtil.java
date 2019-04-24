@@ -365,7 +365,8 @@ public class WebViewActivityUtil {
     }
 
     public String readConfig(String file) {
-        return Util.readFile(Util.getExRootDir() + "/sdyouda/config/" + file);
+        String ret = Util.readFile(Util.getExRootDir() + "/sdyouda/config/" + file, true);
+        return ret;
     }
 
     public void saveConfig(String file, String content) {
@@ -382,8 +383,6 @@ public class WebViewActivityUtil {
     }
 
     public void copyConfig(String proj, String conf, String newConfig) {
-        Log.d("star", Util.getExRootDir() + "/sdyouda/config/" + proj + "/" + conf);
-        Log.d("star",Util.getExRootDir() + "/sdyouda/config/" + proj + "/" + newConfig + ".ini");
         Util.copyFile(Util.getExRootDir() + "/sdyouda/config/" + proj + "/" + conf, Util.getExRootDir() + "/sdyouda/config/" + proj + "/" + newConfig + ".ini");
     }
 }
